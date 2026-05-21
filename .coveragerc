@@ -1,0 +1,20 @@
+[run]
+source = .
+omit =
+    */migrations/*
+    */tests.py
+    */test_*.py
+    manage.py
+    config/wsgi.py
+    config/asgi.py
+    config/celery.py
+    */apps.py
+    */admin.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    def __str__
+    raise NotImplementedError
+    if __name__ == .__main__.:
