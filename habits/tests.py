@@ -16,14 +16,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from habits.models import Habit
 from habits.services import TelegramService, build_reminder_text
 from habits.tasks import _is_time_to_remind, send_habit_reminders
-from habits.validators import (
-    run_habit_validators,
-    validate_duration,
-    validate_periodicity,
-    validate_pleasant_has_no_reward_or_relation,
-    validate_related_habit_is_pleasant,
-    validate_reward_xor_related,
-)
+from habits.validators import (run_habit_validators, validate_duration, validate_periodicity,
+                               validate_pleasant_has_no_reward_or_relation, validate_related_habit_is_pleasant,
+                               validate_reward_xor_related)
 
 User = get_user_model()
 
