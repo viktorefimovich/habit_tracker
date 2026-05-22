@@ -1,6 +1,7 @@
 """
 Пагинатор привычек: 5 элементов на страницу.
 """
+
 from rest_framework.pagination import PageNumberPagination
 
 

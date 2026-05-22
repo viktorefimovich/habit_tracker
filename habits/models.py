@@ -14,9 +14,11 @@
 Бизнес-правила проверяются в `habits.validators` и подключены в clean()
 (для админки) и в сериализаторе (для API).
 """
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from habits.validators import run_habit_validators
 from users.models import User
 
 
@@ -60,7 +62,7 @@ class Habit(models.Model):
         related_name="users_of_this_reward",
         verbose_name="Связанная привычка",
         help_text="Указывается только для полезных привычек. "
-                  "Может ссылаться только на приятную привычку.",
+        "Может ссылаться только на приятную привычку.",
     )
     periodicity = models.PositiveSmallIntegerField(
         default=1,
@@ -93,7 +95,7 @@ class Habit(models.Model):
         null=True,
         editable=False,
         verbose_name="Последнее напоминание",
-        help_text="Время последнего напоминания."
+        help_text="Время последнего напоминания.",
     )
 
     class Meta:
@@ -103,3 +105,13 @@ class Habit(models.Model):
 
     def __str__(self) -> str:
         return f"{self.action} в {self.time} ({self.place})"
+
+    def clean(self) -> None:
+        """Прогоняем доменные валидаторы — для проверок в админке."""
+        run_habit_validators(
+            is_pleasant=self.is_pleasant,
+            reward=self.reward,
+            related_habit=self.related_habit,
+            periodicity=self.periodicity,
+            duration=self.duration,
+        )

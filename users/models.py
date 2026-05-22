@@ -1,18 +1,20 @@
 """
 Модель пользователя.
-
-Используем email как уникальный идентификатор и добавляем поле
-`telegram_chat_id` — для отправки напоминания о привычках.
 """
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+from users.managers import UserManager
 
 
 class User(AbstractUser):
     """Пользователь приложения трекера привычек."""
 
     username = None
-    email = models.EmailField(unique=True, verbose_name="Почта", help_text="Укажите почту")
+    email = models.EmailField(
+        unique=True, verbose_name="Почта", help_text="Укажите почту"
+    )
     telegram_chat_id = models.CharField(
         max_length=64,
         blank=True,
@@ -20,6 +22,8 @@ class User(AbstractUser):
         verbose_name="Telegram chat ID",
         help_text="Укажите telegram_chat_id",
     )
+
+    objects = UserManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

@@ -1,10 +1,12 @@
 """
 Эндпоинты привычек.
 """
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, viewsets
 
 from habits.models import Habit
+from habits.paginators import HabitPaginator
 from habits.permissions import IsOwner
 from habits.serializers import HabitSerializer
 
@@ -57,6 +59,7 @@ class PublicHabitListView(generics.ListAPIView):
     """
 
     serializer_class = HabitSerializer
+    pagination_class = HabitPaginator
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Habit.objects.filter(is_public=True)
 

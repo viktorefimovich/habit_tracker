@@ -7,6 +7,7 @@
 
 Авторизация на остальных эндпоинтах: заголовок `Authorization: Bearer <access>`.
 """
+
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, status
 from rest_framework.request import Request

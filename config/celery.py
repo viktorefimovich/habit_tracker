@@ -1,6 +1,7 @@
 """
 Конфигурация Celery-приложения.
 """
+
 import os
 
 from celery import Celery

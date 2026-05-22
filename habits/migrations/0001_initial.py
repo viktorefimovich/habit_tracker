@@ -109,7 +109,8 @@ class Migration(migrations.Migration):
                     "related_habit",
                     models.ForeignKey(
                         blank=True,
-                        help_text="Указывается только для полезных привычек. Может ссылаться только на приятную привычку.",
+                        help_text="Указывается только для полезных привычек. "
+                        "Может ссылаться только на приятную привычку.",
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         related_name="users_of_this_reward",

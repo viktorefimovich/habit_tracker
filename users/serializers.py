@@ -1,6 +1,7 @@
 """
 Сериализаторы пользователей: регистрация и публичное представление.
 """
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -16,7 +17,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ("id", "email", "password", "telegram_chat_id")
         extra_kwargs = {
-            "username": {"required": False, "allow_blank": True},
             "telegram_chat_id": {"required": False, "allow_blank": True},
         }
 

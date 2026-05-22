@@ -12,9 +12,7 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ("email", "telegram_chat_id")
     ordering = ("id",)
 
-    fieldsets = UserAdmin.fieldsets + (
-        ("Telegram", {"fields": ("telegram_chat_id",)}),
-    )
+    fieldsets = UserAdmin.fieldsets + (("Telegram", {"fields": ("telegram_chat_id",)}),)
     add_fieldsets = UserAdmin.add_fieldsets + (
         ("Telegram", {"fields": ("telegram_chat_id",)}),
     )

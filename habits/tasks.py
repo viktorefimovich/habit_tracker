@@ -1,6 +1,7 @@
 """
 Celery-задачи для рассылки напоминаний о привычках в Telegram.
 """
+
 from datetime import datetime, timedelta
 
 from celery import shared_task

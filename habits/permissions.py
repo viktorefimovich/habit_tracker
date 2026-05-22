@@ -1,6 +1,7 @@
 """
 Права доступа: владелец может всё, остальные — только читать.
 """
+
 from rest_framework import permissions
 
 

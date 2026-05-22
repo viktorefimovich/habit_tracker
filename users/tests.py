@@ -1,6 +1,7 @@
 """
 Тесты приложения users: модель, регистрация, login, refresh, /me/.
 """
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -21,7 +22,6 @@ class UserModelTests(APITestCase):
     def test_create_user(self) -> None:
         user = User.objects.create_user(
             email="alice@example.com",
-            username="alice",
             password="strongpass123",
         )
         self.assertEqual(user.email, "alice@example.com")
@@ -29,9 +29,9 @@ class UserModelTests(APITestCase):
         self.assertEqual(str(user), "alice@example.com")
 
     def test_email_is_unique(self) -> None:
-        User.objects.create_user(email="bob@example.com", username="bob", password="p1")
+        User.objects.create_user(email="bob@example.com", password="p1")
         with self.assertRaises(Exception):
-            User.objects.create_user(email="bob@example.com", username="bob2", password="p2")
+            User.objects.create_user(email="bob@example.com", password="p2")
 
 
 class RegisterEndpointTests(APITestCase):
@@ -66,7 +66,6 @@ class LoginEndpointTests(APITestCase):
     def setUp(self) -> None:
         self.user = User.objects.create_user(
             email="user@example.com",
-            username="user@example.com",
             password="strong-pwd-123",
         )
         self.url = reverse("users:login")
@@ -96,7 +95,6 @@ class RefreshEndpointTests(APITestCase):
     def setUp(self) -> None:
         self.user = User.objects.create_user(
             email="ref@example.com",
-            username="ref",
             password="strong-pwd-123",
         )
         self.refresh = str(RefreshToken.for_user(self.user))
@@ -118,7 +116,6 @@ class MeEndpointTests(APITestCase):
     def setUp(self) -> None:
         self.user = User.objects.create_user(
             email="me@example.com",
-            username="me",
             password="strong-pwd-123",
         )
         self.access = _access_for(self.user)
@@ -137,7 +134,9 @@ class MeEndpointTests(APITestCase):
     def test_me_patch_updates_telegram_chat_id(self) -> None:
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access}")
         response = self.client.patch(
-            self.url, {"telegram_chat_id": "999"}, format="json",
+            self.url,
+            {"telegram_chat_id": "999"},
+            format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user.refresh_from_db()

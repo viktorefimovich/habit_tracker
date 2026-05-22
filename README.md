@@ -80,19 +80,19 @@ celery -A config beat -l info --scheduler django_celery_beat.schedulers:Database
 
 ## Эндпоинты
 
-| Метод | URL                              | Назначение                                | Доступ                  |
-|------:|----------------------------------|--------------------------------------------|-------------------------|
-| POST  | `/api/users/register/`           | Регистрация (возвращает access + refresh)  | AllowAny                |
-| POST  | `/api/users/login/`              | Авторизация по email/password (JWT)        | AllowAny                |
-| POST  | `/api/users/token/refresh/`      | Обновить access по refresh-токену          | AllowAny                |
-| GET   | `/api/users/me/`                 | Профиль текущего пользователя              | IsAuthenticated         |
-| PATCH | `/api/users/me/`                 | Обновить профиль (в т.ч. telegram_chat_id) | IsAuthenticated         |
-| GET   | `/api/habits/`                   | Список своих привычек (пагинация 5/стр.)   | IsAuthenticated         |
-| POST  | `/api/habits/`                   | Создать привычку                           | IsAuthenticated         |
-| GET   | `/api/habits/{id}/`              | Получить свою привычку                     | IsAuthenticated+IsOwner |
-| PUT/PATCH | `/api/habits/{id}/`          | Обновить свою привычку                     | IsAuthenticated+IsOwner |
-| DELETE | `/api/habits/{id}/`             | Удалить свою привычку                      | IsAuthenticated+IsOwner |
-| GET   | `/api/habits/public/`            | Список публичных привычек (read-only)      | IsAuthenticated         |
+| Метод | URL                     | Назначение                                | Доступ                  |
+|------:|-------------------------|--------------------------------------------|-------------------------|
+| POST  | `/api/users/`           | Регистрация (возвращает access + refresh)  | AllowAny                |
+| POST  | `/api/users/login/`     | Авторизация по email/password (JWT)        | AllowAny                |
+| POST  | `/api/users/token/refresh/` | Обновить access по refresh-токену          | AllowAny                |
+| GET   | `/api/users/me/`        | Профиль текущего пользователя              | IsAuthenticated         |
+| PATCH | `/api/users/me/`        | Обновить профиль (в т.ч. telegram_chat_id) | IsAuthenticated         |
+| GET   | `/api/habits/`          | Список своих привычек (пагинация 5/стр.)   | IsAuthenticated         |
+| POST  | `/api/habits/`          | Создать привычку                           | IsAuthenticated         |
+| GET   | `/api/habits/{id}/`     | Получить свою привычку                     | IsAuthenticated+IsOwner |
+| PUT/PATCH | `/api/habits/{id}/`     | Обновить свою привычку                     | IsAuthenticated+IsOwner |
+| DELETE | `/api/habits/{id}/`     | Удалить свою привычку                      | IsAuthenticated+IsOwner |
+| GET   | `/api/habits/public/`   | Список публичных привычек (read-only)      | IsAuthenticated         |
 
 ## Авторизация (JWT)
 

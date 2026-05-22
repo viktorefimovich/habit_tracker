@@ -37,21 +37,17 @@ def validate_related_habit_is_pleasant(related_habit) -> None:
 
 
 def validate_pleasant_has_no_reward_or_relation(
-        is_pleasant: bool,
-        reward: Optional[str],
-        related_habit,
+    is_pleasant: bool,
+    reward: Optional[str],
+    related_habit,
 ) -> None:
     """У приятной привычки не может быть ни reward, ни related_habit."""
     if not is_pleasant:
         return
     if reward:
-        raise ValidationError(
-            "У приятной привычки не может быть вознаграждения."
-        )
+        raise ValidationError("У приятной привычки не может быть вознаграждения.")
     if related_habit is not None:
-        raise ValidationError(
-            "У приятной привычки не может быть связанной привычки."
-        )
+        raise ValidationError("У приятной привычки не может быть связанной привычки.")
 
 
 def validate_periodicity(periodicity: Optional[int]) -> None:
@@ -59,22 +55,18 @@ def validate_periodicity(periodicity: Optional[int]) -> None:
     if periodicity is None:
         return
     if periodicity < 1:
-        raise ValidationError(
-            "Периодичность должна быть не менее 1 дня."
-        )
+        raise ValidationError("Периодичность должна быть не менее 1 дня.")
     if periodicity > 7:
-        raise ValidationError(
-            "Нельзя выполнять привычку реже, чем 1 раз в 7 дней."
-        )
+        raise ValidationError("Нельзя выполнять привычку реже, чем 1 раз в 7 дней.")
 
 
 def run_habit_validators(
-        *,
-        is_pleasant: bool,
-        reward: Optional[str],
-        related_habit,
-        periodicity: Optional[int],
-        duration: Optional[int],
+    *,
+    is_pleasant: bool,
+    reward: Optional[str],
+    related_habit,
+    periodicity: Optional[int],
+    duration: Optional[int],
 ) -> None:
     """
     Общая точка входа для валидации привычки.

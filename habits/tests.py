@@ -1,6 +1,7 @@
 """
 Тесты приложения habits.
 """
+
 from datetime import datetime, time, timedelta
 from unittest.mock import MagicMock, patch
 
@@ -29,7 +30,8 @@ User = get_user_model()
 
 def _make_user(email: str = "u@example.com", chat_id: str = "") -> User:
     user = User.objects.create_user(
-        email=email, username=email, password="strong-pwd-123",
+        email=email,
+        password="strong-pwd-123",
     )
     if chat_id:
         user.telegram_chat_id = chat_id
@@ -63,7 +65,7 @@ class HabitModelTests(APITestCase):
             place="дом",
             time=time(7, 30),
             action="плохая",
-            duration=200,  # > 120
+            duration=200,
         )
         with self.assertRaises(ValidationError):
             habit.clean()
@@ -167,8 +169,12 @@ class HabitApiTests(APITestCase):
 
     def test_create_habit_rejects_invalid_duration(self) -> None:
         payload = {
-            "place": "парк", "time": "07:00", "action": "марафон",
-            "duration": 130, "periodicity": 1, "reward": "смузи",
+            "place": "парк",
+            "time": "07:00",
+            "action": "марафон",
+            "duration": 130,
+            "periodicity": 1,
+            "reward": "смузи",
         }
         response = self.client.post(self.list_url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -176,9 +182,13 @@ class HabitApiTests(APITestCase):
     def test_create_habit_rejects_reward_and_related(self) -> None:
         pleasant = self._create_habit(is_pleasant=True, action="ванна", reward=None)
         payload = {
-            "place": "парк", "time": "07:00", "action": "йога",
-            "duration": 60, "periodicity": 1,
-            "reward": "что-то", "related_habit": pleasant.id,
+            "place": "парк",
+            "time": "07:00",
+            "action": "йога",
+            "duration": 60,
+            "periodicity": 1,
+            "reward": "что-то",
+            "related_habit": pleasant.id,
         }
         response = self.client.post(self.list_url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -186,12 +196,19 @@ class HabitApiTests(APITestCase):
     def test_related_habit_must_belong_to_user(self) -> None:
         pleasant = Habit.objects.create(
             user=self.other,
-            place="дом", time=time(20, 0), action="ванна",
-            duration=60, periodicity=1, is_pleasant=True,
+            place="дом",
+            time=time(20, 0),
+            action="ванна",
+            duration=60,
+            periodicity=1,
+            is_pleasant=True,
         )
         payload = {
-            "place": "дом", "time": "08:00", "action": "уборка",
-            "duration": 60, "periodicity": 1,
+            "place": "дом",
+            "time": "08:00",
+            "action": "уборка",
+            "duration": 60,
+            "periodicity": 1,
             "related_habit": pleasant.id,
         }
         response = self.client.post(self.list_url, payload, format="json")
@@ -201,8 +218,11 @@ class HabitApiTests(APITestCase):
         self._create_habit(action="моя")
         Habit.objects.create(
             user=self.other,
-            place="дом", time=time(9, 0), action="чужая",
-            duration=60, periodicity=1,
+            place="дом",
+            time=time(9, 0),
+            action="чужая",
+            duration=60,
+            periodicity=1,
         )
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -221,8 +241,11 @@ class HabitApiTests(APITestCase):
     def test_cannot_access_other_users_habit(self) -> None:
         other_habit = Habit.objects.create(
             user=self.other,
-            place="дом", time=time(9, 0), action="чужая",
-            duration=60, periodicity=1,
+            place="дом",
+            time=time(9, 0),
+            action="чужая",
+            duration=60,
+            periodicity=1,
         )
         url = reverse("habits:habit-detail", args=[other_habit.id])
         response = self.client.get(url)
@@ -255,12 +278,22 @@ class PublicHabitListTests(APITestCase):
 
     def test_returns_only_public_habits(self) -> None:
         Habit.objects.create(
-            user=self.author, place="дом", time=time(7, 0), action="публичная",
-            duration=60, periodicity=1, is_public=True,
+            user=self.author,
+            place="дом",
+            time=time(7, 0),
+            action="публичная",
+            duration=60,
+            periodicity=1,
+            is_public=True,
         )
         Habit.objects.create(
-            user=self.author, place="дом", time=time(8, 0), action="приватная",
-            duration=60, periodicity=1, is_public=False,
+            user=self.author,
+            place="дом",
+            time=time(8, 0),
+            action="приватная",
+            duration=60,
+            periodicity=1,
+            is_public=False,
         )
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -290,7 +323,10 @@ class TelegramServiceTests(APITestCase):
         service = TelegramService(token="t", api_url="https://api.telegram.org/bot")
         self.assertFalse(service.send_message("123", "hi"))
 
-    @patch("habits.services.requests.post", side_effect=__import__("requests").RequestException("net"))
+    @patch(
+        "habits.services.requests.post",
+        side_effect=__import__("requests").RequestException("net"),
+    )
     def test_send_message_network_error(self, _mock_post) -> None:
         service = TelegramService(token="t", api_url="https://api.telegram.org/bot")
         self.assertFalse(service.send_message("123", "hi"))
@@ -298,8 +334,12 @@ class TelegramServiceTests(APITestCase):
     def test_build_reminder_text(self) -> None:
         user = _make_user()
         habit = Habit.objects.create(
-            user=user, place="дом", time=time(7, 30),
-            action="зарядка", duration=60, periodicity=1,
+            user=user,
+            place="дом",
+            time=time(7, 30),
+            action="зарядка",
+            duration=60,
+            periodicity=1,
         )
         text = build_reminder_text(habit)
         self.assertIn("зарядка", text)
@@ -317,8 +357,12 @@ class CeleryTaskTests(APITestCase):
     def test_is_time_to_remind_first_time(self) -> None:
         user = _make_user(chat_id="42")
         habit = Habit(
-            user=user, place="дом", time=time(10, 0),
-            action="чай", duration=60, periodicity=1,
+            user=user,
+            place="дом",
+            time=time(10, 0),
+            action="чай",
+            duration=60,
+            periodicity=1,
             last_notified_at=None,
         )
         self.assertTrue(_is_time_to_remind(habit, self._now_at(10, 0)))
@@ -327,8 +371,12 @@ class CeleryTaskTests(APITestCase):
     def test_is_time_to_remind_respects_periodicity(self) -> None:
         user = _make_user(chat_id="42")
         habit = Habit(
-            user=user, place="дом", time=time(10, 0),
-            action="чай", duration=60, periodicity=3,
+            user=user,
+            place="дом",
+            time=time(10, 0),
+            action="чай",
+            duration=60,
+            periodicity=3,
             last_notified_at=self._now_at(10, 0) - timedelta(days=1),
         )
         self.assertFalse(_is_time_to_remind(habit, self._now_at(10, 0)))
@@ -345,13 +393,21 @@ class CeleryTaskTests(APITestCase):
         user = _make_user(chat_id="100")
         now = timezone.localtime()
         Habit.objects.create(
-            user=user, place="дом", time=now.time().replace(second=0, microsecond=0),
-            action="вода", duration=10, periodicity=1,
+            user=user,
+            place="дом",
+            time=now.time().replace(second=0, microsecond=0),
+            action="вода",
+            duration=10,
+            periodicity=1,
         )
         user2 = _make_user("nochat@example.com", chat_id="")
         Habit.objects.create(
-            user=user2, place="дом", time=now.time().replace(second=0, microsecond=0),
-            action="никому", duration=10, periodicity=1,
+            user=user2,
+            place="дом",
+            time=now.time().replace(second=0, microsecond=0),
+            action="никому",
+            duration=10,
+            periodicity=1,
         )
 
         sent = send_habit_reminders()
@@ -366,12 +422,18 @@ class CeleryTaskTests(APITestCase):
 
         user = _make_user(chat_id="100")
         Habit.objects.create(
-            user=user, place="дом", time=time(0, 0),
-            action="ночное", duration=10, periodicity=1,
+            user=user,
+            place="дом",
+            time=time(0, 0),
+            action="ночное",
+            duration=10,
+            periodicity=1,
             last_notified_at=timezone.now(),
         )
         with patch("habits.tasks.timezone") as mock_tz:
-            fake_now = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.get_current_timezone())
+            fake_now = datetime(
+                2026, 1, 1, 12, 0, 0, tzinfo=timezone.get_current_timezone()
+            )
             mock_tz.localtime.return_value = fake_now
             mock_tz.now.return_value = fake_now
             sent = send_habit_reminders()

@@ -1,6 +1,7 @@
 """
 Сервисный слой для взаимодействия с Telegram Bot API.
 """
+
 import logging
 from typing import Optional
 
@@ -49,7 +50,9 @@ class TelegramService:
 
         if not response.ok:
             logger.error(
-                "Telegram вернул ошибку %s: %s", response.status_code, response.text,
+                "Telegram вернул ошибку %s: %s",
+                response.status_code,
+                response.text,
             )
             return False
         return True
