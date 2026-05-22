@@ -14,7 +14,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "username", "password", "telegram_chat_id")
+        fields = ("id", "email", "password", "telegram_chat_id")
         extra_kwargs = {
             "username": {"required": False, "allow_blank": True},
             "telegram_chat_id": {"required": False, "allow_blank": True},
@@ -37,5 +37,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "username", "telegram_chat_id")
+        fields = ("id", "email", "telegram_chat_id")
         read_only_fields = ("id",)
