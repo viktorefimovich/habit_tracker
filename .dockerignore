@@ -1,0 +1,39 @@
+# Git и история
+.git
+.gitignore
+.gitattributes
+
+# Виртуальные окружения и кэши Python
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+*.egg-info
+
+# Тесты и покрытие
+.pytest_cache
+.coverage
+htmlcov
+
+# Линтеры/типизация
+.mypy_cache
+
+# Секреты и локальные данные — НЕ должны попадать в образ
+.env
+*.sqlite3
+db.sqlite3
+
+# Собираемое/загружаемое (создаётся в рантайме, монтируется томами)
+static
+staticfiles
+media
+
+# IDE и ОС
+.idea
+.vscode
+*.log
+
+# Docker/CI — не нужны внутри образа
+docker-compose*.yml
+.github

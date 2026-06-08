@@ -1,0 +1,19 @@
+# Все текстовые файлы — с LF в репозитории, нормализация автоматическая.
+* text=auto eol=lf
+
+# Явно фиксируем ключевые текстовые типы.
+*.py    text eol=lf
+*.toml  text eol=lf
+*.cfg   text eol=lf
+*.ini   text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.conf  text eol=lf
+*.sh    text eol=lf
+*.md    text eol=lf
+Dockerfile text eol=lf
+
+# Бинарные файлы git не трогает.
+*.png   binary
+*.jpg   binary
+*.ico   binary
