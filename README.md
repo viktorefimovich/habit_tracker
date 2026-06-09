@@ -18,7 +18,7 @@
 ## Структура
 
 ```
-habit_tracker_claude/
+habit_tracker/
 ├── config/              
 │   ├── settings.py
 │   ├── urls.py
@@ -71,12 +71,66 @@ celery -A config worker -l info
 celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
 
+## Запуск через Docker
+
+Поднимает весь стек одной командой: PostgreSQL, Redis, Django (Gunicorn),
+Celery worker, Celery beat и Nginx.
+
+```bash
+# 1. Подготовить переменные окружения
+cp .env.template .env
+# затем открыть .env и заполнить SECRET_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_API_URL
+
+# 2. Собрать и запустить весь стек
+docker compose up --build
+
+# 3. Создать суперпользователя (в отдельном терминале)
+docker compose exec web python manage.py createsuperuser
+```
+
+После запуска приложение доступно через Nginx:
+
+- `http://localhost/swagger/` — Swagger UI
+- `http://localhost/admin/` — админка
+
+Полезные команды:
+
+```bash
+docker compose ps               # статус сервисов
+docker compose logs -f web      # логи веб-сервиса
+docker compose down             # остановить (тома с данными сохраняются)
+docker compose down -v          # остановить и удалить тома (чистый старт)
+```
+
+Миграции и сбор статики выполняет разовый сервис `backend-init` при каждом старте —
+вручную их запускать не нужно.
+
+## CI/CD и деплой
+
+Pipeline описан в `.github/workflows/ci-cd.yml` и состоит из цепочки job:
+
+1. **lint** — проверка кода `flake8`.
+2. **test** — `pytest` на временных PostgreSQL и Redis (стартует, только если линтер прошёл).
+3. **docker-build** — проверка, что Docker-образы собираются.
+4. **deploy** — деплой на сервер по SSH (только при пуше/мёрже в `develop`).
+
+Деплой заходит на сервер Yandex Cloud по SSH, делает `git pull` и пересобирает стек
+прод-командой:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+Доступы к серверу хранятся в GitHub Secrets: `SSH_HOST`, `SSH_USER`,
+`SSH_PRIVATE_KEY`, `SSH_PORT`. На сервере рядом с проектом лежит боевой `.env`
+(в репозиторий не входит).
+
 ## Документация API
 
 После запуска доступна по адресам:
 
-- `http://localhost:8000/swagger/` — Swagger UI
-- `http://localhost:8000/redoc/` — Redoc
+- `http://localhost/swagger/` — Swagger UI (через Docker/Nginx) или `http://localhost:8000/swagger/` (через Poetry)
+- `http://localhost/redoc/` — Redoc
 
 ## Эндпоинты
 

@@ -1,0 +1,30 @@
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  db:
+    restart: always
+    logging: *default-logging
+
+  redis:
+    restart: always
+    logging: *default-logging
+
+  web:
+    restart: always
+    logging: *default-logging
+
+  celery:
+    restart: always
+    logging: *default-logging
+
+  celery-beat:
+    restart: always
+    logging: *default-logging
+
+  nginx:
+    restart: always
+    logging: *default-logging
